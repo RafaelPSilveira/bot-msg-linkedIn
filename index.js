@@ -40,6 +40,7 @@ async function paginations(page,navPage){
             const block = await result.$('.entity-result__content.entity-result__divider.pt3.pb3.t-12.t-black--light > div.mb1 > div.t-roman.t-sans > div > span.entity-result__title-line.entity-result__title-line--2-lines > span > a > span > span:nth-child(1)');
 
             if(!block) continue;
+            
             let recruitName = (await block.getProperty('innerHTML')).toString();
 
             const cleanName = recruitName ? recruitName.split("JSHandle:")[1].toString().replace(/<!---->/g,'').replace(/[^a-z0-9 ]/gi, '') : "Error";
@@ -48,9 +49,17 @@ async function paginations(page,navPage){
             if(!conectar){
                 totalbuttonClick--;
                 continue;             
+            }else{
+
+                const follow = await result.$('[data-test-reusable-search-primary-action]');
+                if(follow){
+                    continue;
+                }else{
+                    await conectar.click('.entity-result__actions.entity-result__divider > div > button');                 
+                }
+                
             }
-            
-            await conectar.click('.entity-result__actions.entity-result__divider > div > button');
+
             
             await page.waitForTimeout(2000);
             
